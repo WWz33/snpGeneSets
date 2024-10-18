@@ -1,3 +1,5 @@
+extdata <- system.file("extdata", package = "snpGeneSets", mustWork = TRUE)
+
 if (!file.exists(file.path(extdata, "snp138.db"))) {
   cat("downloading and installing SNP database of GRCh37/hg19...\n")
   tryCatch({
