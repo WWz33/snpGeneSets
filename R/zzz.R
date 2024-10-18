@@ -1,54 +1,36 @@
-extdata <- system.file("extdata", package = "snpGeneSets", mustWork = TRUE)
-
-download_and_unzip <- function(url, destfile, exdir) {
-  tryCatch({
-    download.file(url = url, destfile = destfile, method = "curl", quiet = TRUE)
-    if (file.exists(destfile)) {
-      cat(sprintf("Downloaded %s, size: %d bytes\n", destfile, file.info(destfile)$size))
-      unzip(destfile, exdir = exdir)
-      if (file.exists(destfile)) {
-        file.remove(destfile)
-      }
-    } else {
-      cat(sprintf("Failed to download %s\n", url))
+.onLoad <- function(libname, pkgname) {
+    extdata <- system.file("extdata", package=pkgname,
+            lib.loc=libname, mustWork=TRUE)
+    
+    if(!file.exists(file.path(extdata, "snp138.db"))) {
+        cat("downloading and installing SNP database of GRCh37/hg19...\n")
+        system(paste("wget -O", file.path(extdata, "snp138.zip"), "https://github.com/WWz33/snpGeneSets/blob/main/inst/extdata/snp138.zip"))
+        unzip(file.path(extdata, "snp138.zip"), exdir = extdata)
+        if(file.exists(file.path(extdata, "snp138.zip")))
+            file.remove(file.path(extdata, "snp138.zip"))
+    } 
+    if(!file.exists(file.path(extdata, "snp142.db"))) {
+        cat("downloading and installing SNP database of GRCh38/hg38...\n")
+        system(paste("wget -O", file.path(extdata, "snp142.zip"), "https://github.com/WWz33/snpGeneSets/blob/main/inst/extdata/snp142.zip"))
+        unzip(file.path(extdata, "snp142.zip"), exdir = extdata)
+        if(file.exists(file.path(extdata, "snp142.zip")))
+            file.remove(file.path(extdata, "snp142.zip"))
     }
-  }, error = function(e) {
-    cat(sprintf("Error downloading %s: %s\n", url, e$message))
-  })
-}
-
-if (!file.exists(file.path(extdata, "snp138.db"))) {
-  cat("downloading and installing SNP database of GRCh37/hg19...\n")
-  download_and_unzip(
-    url = "https://github.com/WWz33/snpGeneSets/blob/main/inst/extdata/snp138.zip",
-    destfile = file.path(extdata, "snp138.zip"),
-    exdir = extdata
-  )
-}
-
-if (!file.exists(file.path(extdata, "snp142.db"))) {
-  cat("downloading and installing SNP database of GRCh38/hg38...\n")
-  download_and_unzip(
-    url = "https://github.com/WWz33/snpGeneSets/blob/main/inst/extdata/snp142.zip",
-    destfile = file.path(extdata, "snp142.zip"),
-    exdir = extdata
-  )
-}
-
-if (!file.exists(file.path(extdata, "gene105.db"))) {
-  cat("downloading and installing Gene database of GRCh37/hg19...\n")
-  download_and_unzip(
-    url = "https://github.com/WWz33/snpGeneSets/blob/main/inst/extdata/gene105.zip",
-    destfile = file.path(extdata, "gene105.zip"),
-    exdir = extdata
-  )
-}
-
-if (!file.exists(file.path(extdata, "gene106.db"))) {
-  cat("downloading and installing Gene database of GRCh38/hg38...\n")
-  download_and_unzip(
-    url = "https://github.com/WWz33/snpGeneSets/blob/main/inst/extdata/gene106.zip",
-    destfile = file.path(extdata, "gene106.zip"),
-    exdir = extdata
-  )
+    if(!file.exists(file.path(extdata, "gene105.db"))) {
+        cat("downloading and installing Gene database of GRCh37/hg19...\n")
+        system(paste("wget -O", file.path(extdata, "gene105.zip"), "https://github.com/WWz33/snpGeneSets/blob/main/inst/extdata/gene105.zip"))
+        unzip(file.path(extdata, "gene105.zip"), exdir = extdata)
+        if(file.exists(file.path(extdata, "gene105.zip")))
+            file.remove(file.path(extdata, "gene105.zip"))	
+    }
+    if(!file.exists(file.path(extdata, "gene106.db"))) {
+        cat("downloading and installing Gene database of GRCh38/hg38...\n")
+        system(paste("wget -O", file.path(extdata, "gene106.zip"), "https://github.com/WWz33/snpGeneSets/blob/main/inst/extdata/gene106.zip"))
+        unzip(file.path(extdata, "gene106.zip"), exdir = extdata)
+        if(file.exists(file.path(extdata, "gene106.zip")))
+            file.remove(file.path(extdata, "gene106.zip"))
+    }
+    if(!file.exists(file.path(extdata, "msigdb.db"))) {
+        cat("MSigDB database is not existing, please use msigdb_build function to install msigdb gene sets first!\n")
+    }
 }
